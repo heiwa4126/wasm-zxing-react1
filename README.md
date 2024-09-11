@@ -6,6 +6,9 @@
 
 React + Vite で Bun で TypeScript。
 
+サンプルが GitHub Pages に発行してあります
+<https://heiwa4126.github.io/wasm-zxing-react1/>
+
 ## 開発
 
 ```bash
@@ -13,3 +16,7 @@ bun i
 bun dev
 bun run build & bun preview
 ```
+
+## TODO
+
+- GitHub Pages のワークフローが pnpm なのを直す
