@@ -37,6 +37,7 @@ function App() {
 			canvas.height = img.naturalHeight;
 			ctx.drawImage(img, 0, 0);
 			const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			// imgDataは<img>から取得できなくて、1回<canvas>を解さないといけないらしい
 			readBarcodesFromImageData(imgData, readerOptions)
 				.then((result) => {
 					setQrResult(result);
