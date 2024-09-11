@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-	ReadResult,
-	type ReaderOptions,
-	readBarcodesFromImageData,
-} from "zxing-wasm/reader";
+import { type ReadResult, type ReaderOptions, readBarcodesFromImageData } from "zxing-wasm/reader";
 import "./App.css";
 import Qr5 from "./assets/qr5.jpg";
 
@@ -62,10 +58,7 @@ function App() {
 	return (
 		<>
 			<h1>wasm-zxing-react1</h1>
-			<canvas
-				ref={canvasRef}
-				style={{ display: "block", width: "800px", height: "auto" }}
-			/>
+			<canvas ref={canvasRef} style={{ display: "block", width: "800px", height: "auto" }} />
 			<img
 				ref={imgRef}
 				src={Qr5}
