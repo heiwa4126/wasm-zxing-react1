@@ -23,27 +23,32 @@ function startStream(newDeviceId: VideoDeviceID, videoRef: React.RefObject<HTMLV
 		.catch((error: Error) => console.error("Error accessing media devices.", error));
 }
 
+// TODO: とりあえずApp()の外に書いたけど、場合によってはApp()内に書いたほうがいいかも
+async function captureSnapshot(
+	videoRef: React.RefObject<HTMLVideoElement>,
+	canvasRef: React.RefObject<HTMLCanvasElement>,
+) {
+	if (!(videoRef?.current && canvasRef?.current)) return;
+
+	const canvas = canvasRef.current;
+	const video = videoRef.current;
+	const context = canvas.getContext("2d", { willReadFrequently: true });
+	if (!context) return;
+
+	// ビデオの現在のフレームをキャンバスに描画
+	canvas.width = video.videoWidth;
+	canvas.height = video.videoHeight;
+	context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+	// TODO: 以下、canvasRefの画像をもとに何か画像処理をする
+	// await someImageProcessingFunction(canvas);
+}
+
 function App() {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [deviceId, setDeviceId] = useState<VideoDeviceID>();
 	const videoDevices = useVideoDevices1();
-
-	const captureSnapshot = () => {
-		if (!(videoRef?.current && canvasRef?.current)) return;
-
-		const canvas = canvasRef.current;
-		const video = videoRef.current;
-		const context = canvas.getContext("2d", { willReadFrequently: true });
-		if (!context) return;
-
-		// ビデオの現在のフレームをキャンバスに描画
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
-		context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-		// TODO: 以下、canvasRefの画像をもとに何か画像処理をする
-	};
 
 	useEffect(() => {
 		let handle: number;
@@ -56,14 +61,16 @@ function App() {
 			// captureSnapshot()を300ms毎に呼び出すループを開始
 			const nextTick = () => {
 				handle = window.setTimeout(async () => {
-					captureSnapshot();
+					captureSnapshot(videoRef, canvasRef).then(() => {});
 					nextTick();
 				}, 300);
 			};
 			nextTick();
 		}
 
-		// コンポーネントがアンマウントされたときにカメラストリームを停止するlambdaを返す
+		// コンポーネントがアンマウントされたときに
+		// 1. captureSnapshot()のループを停止する
+		// 2. カメラストリームを停止する
 		return () => {
 			clearTimeout(handle);
 			if (videoRef.current?.srcObject) {
