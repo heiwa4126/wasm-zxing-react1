@@ -10,9 +10,15 @@ const readerOptions: ReaderOptions = {
 	maxNumberOfSymbols: 16,
 };
 
+type Size = {
+	width: number;
+	height: number;
+};
+
 function App() {
 	const imgRef = useRef<HTMLImageElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [imgSize, setImgSize] = useState<Size>();
 	const [qrResult, setQrResult] = useState<ReadResult[]>();
 
 	useEffect(() => {
@@ -38,6 +44,7 @@ function App() {
 			readBarcodesFromImageData(imgData, readerOptions)
 				.then((result) => {
 					setQrResult(result);
+					setImgSize({ width: canvas.width, height: canvas.height });
 					console.log(result);
 				})
 				.catch((error) => {
@@ -66,8 +73,58 @@ function App() {
 				alt="QRCode Example No.5 (3024 x 1935)"
 				style={{ visibility: "hidden", width: 0, height: 0 }}
 			/>
-			<QrResults results={qrResult} />
+			{imgSize && qrResult && (
+				<SvgQRs width={imgSize.width} height={imgSize.height} data={qrResult} />
+			)}
+			{qrResult && <QrResults results={qrResult} />}
 		</>
+	);
+}
+
+function SvgQr({ item }: { item: ReadResult }) {
+	const p = item.position;
+	return (
+		<>
+			<polygon
+				points={`${p.topLeft.x},${p.topLeft.y} ${p.topRight.x},${p.topRight.y} ${p.bottomRight.x},${p.bottomRight.y} ${p.bottomLeft.x},${p.bottomLeft.y}`}
+				fill="rgba(0, 255, 0, 0.4)"
+				stroke="none"
+				strokeWidth="10"
+			/>
+			<text
+				font-family="Arial"
+				font-size="60"
+				text-anchor="middle"
+				x={(p.topLeft.x + p.bottomRight.x) / 2}
+				y={(p.topLeft.y + p.bottomRight.y) / 2 + 30}
+				fill="Red"
+			>
+				{item.text}
+			</text>
+		</>
+	);
+}
+
+function SvgQRs({ width, height, data }: { width: number; height: number; data: ReadResult[] }) {
+	if (data.length === 0) return <></>;
+
+	return (
+		<svg
+			style={{
+				position: "absolute",
+				top: 0,
+				left: 0,
+				width: "100%",
+				height: "100%",
+			}}
+			viewBox={`0 0 ${width} ${height}`}
+			preserveAspectRatio="none"
+		>
+			<title>svg</title>
+			{data.map((item, index) => (
+				<SvgQr item={item} key={`${index}${item.text}`} />
+			))}
+		</svg>
 	);
 }
 
