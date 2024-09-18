@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { type ReadResult, type ReaderOptions, readBarcodesFromImageData } from "zxing-wasm/reader";
 import "./App.css";
+import { QrResults } from "./QrResults";
 import Qr5 from "./assets/qr5.jpg";
 
 const readerOptions: ReaderOptions = {
@@ -65,15 +66,7 @@ function App() {
 				alt="QRCode Example No.5 (3024 x 1935)"
 				style={{ visibility: "hidden", width: 0, height: 0 }}
 			/>
-			{qrResult && (
-				<ul>
-					{qrResult.map((result, i) => (
-						<li key={`${i}${result.text}`}>
-							Format: {result.format}, Text: {result.text}
-						</li>
-					))}
-				</ul>
-			)}
+			<QrResults results={qrResult} />
 		</>
 	);
 }
