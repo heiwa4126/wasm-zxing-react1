@@ -85,7 +85,16 @@ export function useVideoDevices1() {
  */
 export function VideoDevices1() {
 	const videoDevices = useVideoDevices1();
+	return <VideoDevices0 videoDevices={videoDevices} />;
+}
 
+/**
+ * ビデオデバイスの情報を表示するReactコンポーネント。
+ * useVideoDevices1()フックのサンプル
+ *
+ * @returns ビデオデバイスの情報を表示する
+ */
+export function VideoDevices0({ videoDevices }: { videoDevices?: VideoDevices }) {
 	return (
 		<>
 			<h3>Default Camera</h3>
