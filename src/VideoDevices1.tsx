@@ -115,7 +115,7 @@ export function VideoDevices0({ videoDevices }: { videoDevices?: VideoDevices })
 				<p>checking...</p>
 			)}
 			<h3>message</h3>
-			<p>{videoDevices ? videoDevices.message : "checking..."}</p>
+			<p>{videoDevices ? videoDevices.message || "(no message)" : "checking..."}</p>
 		</>
 	);
 }

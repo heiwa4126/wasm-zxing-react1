@@ -7,17 +7,17 @@ import App3 from "./App3";
 function AppSelector() {
 	return (
 		<>
-			<ul>
+			<ol reversed>
 				<li>
-					<Link to="/3">v3. ビデオ周りの実験</Link>
+					<Link to="/3">ビデオ周りの実験</Link>
 				</li>
 				<li>
-					<Link to="/2">v2. imgにSVGオーバレイ</Link>
+					<Link to="/2">imgにXZingしてSVGオーバレイ</Link>
 				</li>
 				<li>
-					<Link to="/1">v1. 一番素朴なバージョン</Link>
+					<Link to="/1">imgをXZing(素朴版)</Link>
 				</li>
-			</ul>
+			</ol>
 		</>
 	);
 }
