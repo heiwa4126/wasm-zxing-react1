@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { type ReadResult, type ReaderOptions, readBarcodesFromImageData } from "zxing-wasm/reader";
-import "./App.css";
 import { QrResults } from "./QrResults";
 import Qr5 from "./assets/qr5.jpg";
 

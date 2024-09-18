@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
+export type VideoDeviceID = string;
+
 export type VideoDevices = {
 	devices?: MediaDeviceInfo[];
-	defaultDeviceId?: string;
+	defaultDeviceId?: VideoDeviceID;
 	message?: string; // for debugging
 };
 
