@@ -66,17 +66,19 @@ function App() {
 	return (
 		<>
 			<h1>wasm-zxing-react1 (2)</h1>
-			<canvas ref={canvasRef} style={{ display: "block", width: "800px", height: "auto" }} />
+			<div style={{ position: "relative", width: "fit-content" }}>
+				<canvas ref={canvasRef} style={{ display: "block", width: "800px", height: "auto" }} />
+				{imgSize && qrResult && (
+					<SvgQRs width={imgSize.width} height={imgSize.height} data={qrResult} />
+				)}
+			</div>
+			{qrResult && <QrResults results={qrResult} />}
 			<img
 				ref={imgRef}
 				src={Qr5}
 				alt="QRCode Example No.5 (3024 x 1935)"
-				style={{ visibility: "hidden", width: 0, height: 0 }}
+				style={{ display: "none" }}
 			/>
-			{imgSize && qrResult && (
-				<SvgQRs width={imgSize.width} height={imgSize.height} data={qrResult} />
-			)}
-			{qrResult && <QrResults results={qrResult} />}
 		</>
 	);
 }

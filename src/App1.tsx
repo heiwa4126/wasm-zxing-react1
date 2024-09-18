@@ -60,13 +60,13 @@ function App() {
 		<>
 			<h1>wasm-zxing-react1 (1)</h1>
 			<canvas ref={canvasRef} style={{ display: "block", width: "800px", height: "auto" }} />
+			<QrResults results={qrResult} />
 			<img
 				ref={imgRef}
 				src={Qr5}
 				alt="QRCode Example No.5 (3024 x 1935)"
-				style={{ visibility: "hidden", width: 0, height: 0 }}
+				style={{ display: "none" }}
 			/>
-			<QrResults results={qrResult} />
 		</>
 	);
 }
