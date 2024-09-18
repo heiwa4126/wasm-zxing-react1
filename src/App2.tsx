@@ -1,18 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { type ReadResult, type ReaderOptions, readBarcodesFromImageData } from "zxing-wasm/reader";
 import "./App.css";
-import { QrResults } from "./QrResults";
 import Qr5 from "./assets/qr5.jpg";
+import { QrResults } from "./QrResults";
+import { type Size, SvgQRs } from "./SvgQR";
 
 const readerOptions: ReaderOptions = {
 	tryHarder: true,
 	formats: ["QRCode"],
 	maxNumberOfSymbols: 16,
-};
-
-type Size = {
-	width: number;
-	height: number;
 };
 
 function App() {
@@ -68,9 +64,7 @@ function App() {
 			<h1>wasm-zxing-react1 (2)</h1>
 			<div style={{ position: "relative", width: "fit-content" }}>
 				<canvas ref={canvasRef} style={{ display: "block", width: "800px", height: "auto" }} />
-				{imgSize && qrResult && (
-					<SvgQRs width={imgSize.width} height={imgSize.height} data={qrResult} />
-				)}
+				{imgSize && qrResult && <SvgQRs size={imgSize} data={qrResult} />}
 			</div>
 			{qrResult && <QrResults results={qrResult} />}
 			<img
@@ -80,53 +74,6 @@ function App() {
 				style={{ display: "none" }}
 			/>
 		</>
-	);
-}
-
-function SvgQr({ item }: { item: ReadResult }) {
-	const p = item.position;
-	return (
-		<>
-			<polygon
-				points={`${p.topLeft.x},${p.topLeft.y} ${p.topRight.x},${p.topRight.y} ${p.bottomRight.x},${p.bottomRight.y} ${p.bottomLeft.x},${p.bottomLeft.y}`}
-				fill="rgba(0, 255, 0, 0.4)"
-				stroke="none"
-				strokeWidth="10"
-			/>
-			<text
-				font-family="Arial"
-				font-size="60"
-				text-anchor="middle"
-				x={(p.topLeft.x + p.bottomRight.x) / 2}
-				y={(p.topLeft.y + p.bottomRight.y) / 2 + 30}
-				fill="Red"
-			>
-				{item.text}
-			</text>
-		</>
-	);
-}
-
-function SvgQRs({ width, height, data }: { width: number; height: number; data: ReadResult[] }) {
-	if (data.length === 0) return <></>;
-
-	return (
-		<svg
-			style={{
-				position: "absolute",
-				top: 0,
-				left: 0,
-				width: "100%",
-				height: "100%",
-			}}
-			viewBox={`0 0 ${width} ${height}`}
-			preserveAspectRatio="none"
-		>
-			<title>svg</title>
-			{data.map((item, index) => (
-				<SvgQr item={item} key={`${index}${item.text}`} />
-			))}
-		</svg>
 	);
 }
 
