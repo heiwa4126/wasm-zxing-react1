@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { type ReadResult, type ReaderOptions, readBarcodesFromImageData } from "zxing-wasm/reader";
 import { QrResults } from "./QrResults";
-import { type Size, SvgQRs } from "./SvgQR";
+import { SvgQRs } from "./SvgQR";
 import Qr5 from "./assets/qr5.jpg";
+import type { Size } from "./types";
 
 const readerOptions: ReaderOptions = {
 	tryHarder: true,

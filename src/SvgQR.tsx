@@ -1,9 +1,5 @@
 import type { ReadResult } from "zxing-wasm/reader";
-
-export type Size = {
-	width: number;
-	height: number;
-};
+import type { Size } from "./types";
 
 export function SvgQr({ item }: { item: ReadResult }) {
 	const p = item.position;
