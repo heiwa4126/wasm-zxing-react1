@@ -1,14 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import VideoDeviceDropdown from "./VideoDeviceDropdown";
 import { type VideoDeviceID, VideoDevices0, useVideoDevices1 } from "./VideoDevices1";
+import type { Size } from "./types";
 
-function startStream(newDeviceId: VideoDeviceID, videoRef: React.RefObject<HTMLVideoElement>) {
-	if (!videoRef?.current) return;
+/**
+ * 指定されたビデオ要素のすべてのトラックを停止します
+ * @param videoRef - 停止するトラックを持つビデオ要素の React.RefObject
+ */
+function stopAllTracks(videoRef: React.RefObject<HTMLVideoElement>) {
+	if (videoRef.current?.srcObject) {
+		for (const track of (videoRef.current.srcObject as MediaStream).getTracks()) {
+			track.stop();
+		}
+	}
+}
+
+async function startStream(
+	newDeviceId: VideoDeviceID,
+	videoRef: React.RefObject<HTMLVideoElement>,
+): Promise<Size | Error | undefined> {
+	if (!videoRef?.current) return undefined;
 
 	const constraints = {
-		video: { deviceId: newDeviceId ? { exact: newDeviceId } : undefined },
+		video: {
+			deviceId: newDeviceId ? { exact: newDeviceId } : undefined,
+			width: { ideal: 9999 }, // 希望解像度
+			height: { ideal: 9999 }, // 希望解像度
+		},
 	};
-	navigator.mediaDevices
+
+	return navigator.mediaDevices
 		.getUserMedia(constraints)
 		.then((stream: MediaStream) => {
 			const track = stream.getVideoTracks()[0];
@@ -19,8 +40,12 @@ function startStream(newDeviceId: VideoDeviceID, videoRef: React.RefObject<HTMLV
 				videoRef.current.srcObject = stream;
 				//videoRef.current.play();
 			}
+			return width && height ? { width, height } : undefined;
 		})
-		.catch((error: Error) => console.error("Error accessing media devices.", error));
+		.catch((error: Error) => {
+			console.error("Error accessing media devices.", error);
+			return error;
+		});
 }
 
 // TODO: とりあえずApp()の外に書いたけど、場合によってはApp()内に書いたほうがいいかも
@@ -41,7 +66,7 @@ async function captureSnapshot(
 	context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
 	// TODO: 以下、canvasRefの画像をもとに何か画像処理をする
-	// await someImageProcessingFunction(canvas);
+	// await someImageProcessingFunction(canvasRef);
 }
 
 function App() {
@@ -56,12 +81,20 @@ function App() {
 		if (videoDevices?.defaultDeviceId) {
 			const newDeviceId = videoDevices.defaultDeviceId;
 			setDeviceId(newDeviceId);
-			startStream(newDeviceId, videoRef);
+			startStream(newDeviceId, videoRef).then((size) => {
+				console.log({ size });
+				// // カメラの解像度がわかったら、キャンバスのサイズを調整
+				// if (size && canvasRef.current) {
+				// 	const canvas = canvasRef.current;
+				// 	canvas.width = size.width;
+				// 	canvas.height = size.height;
+				// }
+			});
 
 			// captureSnapshot()を300ms毎に呼び出すループを開始
 			const nextTick = () => {
 				handle = window.setTimeout(async () => {
-					captureSnapshot(videoRef, canvasRef).then(() => {});
+					captureSnapshot(videoRef, canvasRef);
 					nextTick();
 				}, 300);
 			};
@@ -73,18 +106,17 @@ function App() {
 		// 2. カメラストリームを停止する
 		return () => {
 			clearTimeout(handle);
-			if (videoRef.current?.srcObject) {
-				const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-				// biome-ignore lint/complexity/noForEach: <explanation>
-				tracks.forEach((track) => track.stop());
-			}
+			stopAllTracks(videoRef);
 		};
 	}, [videoDevices]);
 
 	const onVideoDeviceChange = (newDeviceId: string) => {
 		videoRef.current?.pause();
+		stopAllTracks(videoRef);
 		setDeviceId(newDeviceId);
-		startStream(newDeviceId, videoRef);
+		startStream(newDeviceId, videoRef).then((size) => {
+			console.log({ size });
+		});
 	};
 
 	return (
