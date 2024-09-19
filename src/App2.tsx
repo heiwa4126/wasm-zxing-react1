@@ -26,7 +26,7 @@ function App() {
 		}
 
 		const handleImageLoad = () => {
-			const ctx = canvas.getContext("2d");
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
 			if (!ctx) {
 				// 古いブラウザで getContext("2d") が null を返す可能性がある。ほぼ無い
 				console.error("Canvas 2D context is not supported.");

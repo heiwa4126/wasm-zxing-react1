@@ -77,6 +77,9 @@ function App() {
 
 	useEffect(() => {
 		let handle: number;
+		if (!videoDevices) return;
+
+		console.log("useEffect mounted");
 
 		if (videoDevices?.defaultDeviceId) {
 			const newDeviceId = videoDevices.defaultDeviceId;
@@ -107,6 +110,7 @@ function App() {
 		return () => {
 			clearTimeout(handle);
 			stopAllTracks(videoRef);
+			console.log("useEffect unmounted");
 		};
 	}, [videoDevices]);
 

@@ -31,6 +31,9 @@ export function useVideoDevices1() {
 	const [videoDevices, setVideoDevices] = useState<VideoDevices>();
 
 	useEffect(() => {
+		console.log("useEffect mounted");
+		if (videoDevices) return;
+
 		const fetchData = async () => {
 			// デフォルトカメラの取得
 			// getUserMedia()を先にしないとSafariでnavigator.mediaDevices.enumerateDevices()が空になる
@@ -72,8 +75,16 @@ export function useVideoDevices1() {
 				defaultDeviceId: defaultCameraId,
 			});
 		};
+
+		const cleanup = () => {
+			// unmount時の処理
+			console.log("useEffect unmounted");
+		};
+
 		fetchData();
-	}, []);
+
+		return cleanup;
+	}, [videoDevices]);
 
 	return videoDevices;
 }
