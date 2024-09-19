@@ -18,10 +18,10 @@ const constraints: MediaStreamConstraints = {
 };
 
 /**
- * カメラデバイスの情報を取得するフック。
- * カメラデバイスのリストと、背面カメラのデフォルトを取得する。
+ * ビデオデバイスの情報を取得するフック。
+ * ビデオデバイスのリストと、**背面カメラの**デフォルトを取得する。
  *
- * @returns カメラデバイスの情報
+ * @returns ビデオデバイスの情報
  * @example
  * ```tsx
  * const videoDevices = useVideoDevices1();
@@ -59,10 +59,9 @@ export function useVideoDevices1() {
 				return videoDevices;
 			}
 
-			// ストリームを停止
+			// 全ストリームを停止
 			if (stream) {
-				const tracks = stream.getTracks();
-				for (const track of tracks) {
+				for (const track of stream.getTracks()) {
 					track.stop();
 				}
 			}

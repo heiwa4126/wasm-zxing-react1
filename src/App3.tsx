@@ -21,7 +21,7 @@ async function startStream(
 ): Promise<Size | Error | undefined> {
 	if (!videoRef?.current) return undefined;
 
-	const constraints = {
+	const constraints: MediaStreamConstraints = {
 		video: {
 			deviceId: newDeviceId ? { exact: newDeviceId } : undefined,
 			width: { ideal: 9999 }, // 希望解像度
